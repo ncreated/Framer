@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "framing",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ncreated/Framing",
+      "state" : {
+        "revision" : "64459fe73419d56fadd6e428edba75e441ddbf71",
+        "version" : "1.0.0"
+      }
+    }
+  ],
+  "version" : 2
+}
