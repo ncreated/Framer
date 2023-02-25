@@ -54,7 +54,8 @@ internal struct CanvasRenderer {
 
                 let attributedText = NSAttributedString(string: content.text, attributes: textAttributes)
 
-                let bb = attributedText.boundingRect(with: rect.size, context: nil)
+                let options: NSStringDrawingOptions = [.usesLineFragmentOrigin]
+                let bb = attributedText.boundingRect(with: rect.size, options: options, context: nil)
                 let textRect: CGRect
                 switch content.verticalAlignment {
                 case .leading:

@@ -144,6 +144,39 @@ class FramerCanvasTests: XCTestCase {
         try compareWithSnapshot(image: canvas.image)
     }
 
+    func testBlueprintMultilineTextFrame() throws {
+        // Given
+        let canvas = FramerCanvas.create(size: .init(width: 400, height: 400))
+
+        let container = Frame(rect: canvas.bounds)
+            .inset(top: 40, left: 40, bottom: 40, right: 40)
+        let frame = Frame(ofSize: .init(width: 200, height: 200))
+            .putInside(container, alignTo: .topLeft)
+
+        let blueprintFrame = frame.toBlueprintFrame(
+            withStyle: .init(
+                lineWidth: 1,
+                lineColor: .black,
+                fillColor: .white
+            ),
+            content: .init(
+                text: """
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                """,
+                textColor: .purple,
+                font: .systemFont(ofSize: 8),
+                horizontalAlignment: .center,
+                verticalAlignment: .center
+            )
+        )
+
+        // When
+        canvas.draw(blueprint: Blueprint(frames: [blueprintFrame]))
+
+        // Then
+        try compareWithSnapshot(image: canvas.image)
+    }
+
     func testEraseBlueprints() throws {
         // Given
         let canvas = FramerCanvas.create(size: .init(width: 400, height: 400))
