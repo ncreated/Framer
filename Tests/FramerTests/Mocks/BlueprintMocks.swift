@@ -10,7 +10,7 @@ extension Blueprint: AnyMockable, RandomMockable {
     static func mockRandom() -> Blueprint {
         return Blueprint(
             id: .mockRandom(),
-            frames: .mockRandom()
+            contents: .mockRandom()
         )
     }
 
@@ -26,12 +26,9 @@ extension Blueprint: AnyMockable, RandomMockable {
 
     static func mockWith(
         id: ID = .mockAny(),
-        frames: [BlueprintFrame] = .mockAny()
+        contents: [Content] = .mockAny()
     ) -> Blueprint {
-        return Blueprint(
-            id: id,
-            frames: frames
-        )
+        return Blueprint(id: id, contents: contents)
     }
 }
 
@@ -52,6 +49,16 @@ extension Blueprint.ID: AnyMockable, RandomMockable {
         return Blueprint.ID(
             stringLiteral: stringLiteral
         )
+    }
+}
+
+extension Blueprint.Content: AnyMockable, RandomMockable {
+    static func mockAny() -> Blueprint.Content {
+        return .frame(.mockAny())
+    }
+
+    static func mockRandom() -> Blueprint.Content {
+        return .frame(.mockRandom())
     }
 }
 

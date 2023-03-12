@@ -10,15 +10,19 @@ public struct Blueprint: Equatable {
         }
     }
 
+    public enum Content: Equatable {
+        case frame(BlueprintFrame)
+    }
+
     public var id: ID
-    public var frames: [BlueprintFrame]
+    public var contents: [Content]
 
     public init(
         id: ID = .init(stringLiteral: UUID().uuidString),
-        frames: [BlueprintFrame]
+        contents: [Content]
     ) {
         self.id = id
-        self.frames = frames
+        self.contents = contents
     }
 }
 

@@ -36,16 +36,18 @@ public extension View {
                 FramerWindow.current.draw(
                     blueprint: Blueprint(
                         id: Blueprint.ID(stringLiteral: "\(self)-\(frameName)"),
-                        frames: [
-                            BlueprintFrame(
-                                x: frame.minX,
-                                y: frame.minY,
-                                width: frame.width,
-                                height: frame.height,
-                                style: frameStyle,
-                                annotation: BlueprintFrameAnnotation(
-                                    text: "\(frameName) \(pretty(frame))",
-                                    style: annotationStyle
+                        contents: [
+                            .frame(
+                                BlueprintFrame(
+                                    x: frame.minX,
+                                    y: frame.minY,
+                                    width: frame.width,
+                                    height: frame.height,
+                                    style: frameStyle,
+                                    annotation: BlueprintFrameAnnotation(
+                                        text: "\(frameName) \(pretty(frame))",
+                                        style: annotationStyle
+                                    )
                                 )
                             )
                         ]
