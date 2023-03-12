@@ -83,6 +83,28 @@ internal struct CanvasRenderer {
             }
 
             attributedText.draw(in: textRect)
+
+        case let .image(image):
+            let containerFrame = Frame(rect: rect(from: blueprintFrame))
+
+            let insideAlignment: Frame.InsideAlignment = {
+                switch (content.horizontalAlignment, content.verticalAlignment) {
+                case (.leading, .leading):      return .topLeft
+                case (.leading, .center):       return .middleLeft
+                case (.leading, .trailing):     return .bottomLeft
+                case (.center, .leading):       return .topCenter
+                case (.center, .center):        return .middleCenter
+                case (.center, .trailing):      return .bottomCenter
+                case (.trailing, .leading):     return .topRight
+                case (.trailing, .center):      return .middleRight
+                case (.trailing, .trailing):    return .bottomRight
+                }
+            }()
+
+            let imageFrame = Frame(ofSize: image.size)
+                .putInside(containerFrame, alignTo: insideAlignment)
+
+            image.draw(in: imageFrame.rect)
         }
     }
 

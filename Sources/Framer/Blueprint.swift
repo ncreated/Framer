@@ -79,6 +79,7 @@ public struct BlueprintFrameStyle: Equatable {
 public struct BlueprintFrameContent: Equatable {
     public enum ContentType: Equatable {
         case text(text: String, color: UIColor, font: UIFont)
+        case image(image: UIImage)
     }
 
     public var contentType: ContentType

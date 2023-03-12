@@ -154,7 +154,7 @@ class FramerCanvasTests: XCTestCase {
         try compareWithSnapshot(image: canvas.image)
     }
 
-    func testBlueprintMultilineTextFrame() throws {
+    func testDrawBlueprintWithMultilineTextFrame() throws {
         // Given
         let canvas = FramerCanvas.create(size: .init(width: 400, height: 400))
 
@@ -184,6 +184,51 @@ class FramerCanvasTests: XCTestCase {
 
         // When
         canvas.draw(blueprint: Blueprint(contents: [.frame(blueprintFrame)]))
+
+        // Then
+        try compareWithSnapshot(image: canvas.image)
+    }
+
+    func testDrawBlueprintWithMultipleImageFrames() throws {
+        guard #available(iOS 13.0, *) else { return }
+
+        // Given
+        let canvas = FramerCanvas.create(size: .init(width: 100, height: 100))
+
+        let container = Frame(rect: canvas.bounds)
+            .inset(top: 10, left: 10, bottom: 10, right: 10)
+
+        let symbolNamesWithAlignments: [(String, BlueprintFrameContent.Alignment, BlueprintFrameContent.Alignment)] = [
+            // (symbol name, horizontal alignment, vertical alignment)
+            ("arrow.up", .center, .leading),
+            ("arrow.up.left", .leading, .leading),
+            ("arrow.up.right", .trailing, .leading),
+            ("arrow.down", .center, .trailing),
+            ("arrow.down.left", .leading, .trailing),
+            ("arrow.down.right", .trailing, .trailing),
+            ("arrow.left", .leading, .center),
+            ("arrow.right", .trailing, .center),
+            ("circle.hexagongrid.circle", .center, .center),
+        ]
+
+        let blueprint = Blueprint(
+            contents: symbolNamesWithAlignments.map { symbolName, horizontalAlignment, verticalAlignment in
+                return .frame(
+                    container
+                        .toBlueprintFrame(
+                            withStyle: .init(),
+                            content: .init(
+                                contentType: .image(image: UIImage(systemName: symbolName)!.withTintColor(.yellow)),
+                                horizontalAlignment: horizontalAlignment,
+                                verticalAlignment: verticalAlignment
+                            )
+                        )
+                )
+            }
+        )
+
+        // When
+        canvas.draw(blueprint: blueprint)
 
         // Then
         try compareWithSnapshot(image: canvas.image)
