@@ -12,7 +12,7 @@ public struct Blueprint: Equatable {
 
     public enum Content: Equatable {
         case frame(BlueprintFrame)
-        // TODO: case line(BlueprintLine)
+        case line(BlueprintLine)
         // TODO: case path(BlueprintPath)
     }
 
@@ -150,6 +150,38 @@ public struct BlueprintFrame: Equatable {
                 self.position = position
                 self.alignment = alignment
             }
+        }
+    }
+}
+
+public struct BlueprintLine: Equatable {
+    public var from: CGPoint
+    public var to: CGPoint
+    public var style: Style
+
+    public init(
+        from: CGPoint,
+        to: CGPoint,
+        style: BlueprintLine.Style
+    ) {
+        self.from = from
+        self.to = to
+        self.style = style
+    }
+
+    public struct Style: Equatable {
+        public var lineWidth: CGFloat
+        public var lineColor: UIColor
+        public var opacity: CGFloat
+
+        public init(
+            lineWidth: CGFloat = 1,
+            lineColor: UIColor = .black,
+            opacity: CGFloat = 0.75
+        ) {
+            self.lineWidth = lineWidth
+            self.lineColor = lineColor
+            self.opacity = opacity
         }
     }
 }

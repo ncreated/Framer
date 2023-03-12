@@ -16,6 +16,7 @@ internal struct CanvasRenderer {
                 blueprint.contents.forEach { content in
                     switch content {
                     case .frame(let frame): draw(blueprintFrame: frame, in: context)
+                    case .line(let line):   draw(blueprintLine: line, in: context)
                     }
                 }
 
@@ -24,6 +25,8 @@ internal struct CanvasRenderer {
             }
         }
     }
+
+    // MARK: - Drawing `BlueprintFrame`
 
     private func draw(blueprintFrame: BlueprintFrame, in context: UIGraphicsImageRendererContext) {
         let rect = rect(from: blueprintFrame)
@@ -135,6 +138,17 @@ internal struct CanvasRenderer {
         }
     }
 
+    // MARK: - Drawing `BlueprintLine`
+
+    private func draw(blueprintLine: BlueprintLine, in context: UIGraphicsImageRendererContext) {
+        context.cgContext.setLineWidth(blueprintLine.style.lineWidth)
+        context.cgContext.setStrokeColor(blueprintLine.style.lineColor.cgColor)
+        context.cgContext.setAlpha(blueprintLine.style.opacity)
+        context.cgContext.move(to: blueprintLine.from)
+        context.cgContext.addLine(to: blueprintLine.to)
+        context.cgContext.strokePath()
+    }
+
     // MARK: - Helpers
 
     private func rect(from blueprintFrame: BlueprintFrame) -> CGRect {
@@ -212,6 +226,8 @@ private extension Blueprint.Content {
         switch self {
         case .frame(let frame):
             return frame.annotation.map { (frame, $0) }
+        default:
+            return nil
         }
     }
 }

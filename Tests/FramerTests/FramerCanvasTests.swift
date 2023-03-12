@@ -11,15 +11,13 @@ class FramerCanvasTests: XCTestCase {
         // Given
         let canvas = FramerCanvas.create(size: .init(width: 400, height: 400))
 
+        var blueprintFrame: BlueprintFrame = Frame(rect: canvas.bounds)
+            .inset(top: 10, left: 10, bottom: 10, right: 10)
+            .toBlueprintFrame(withStyle: redFrameStyle, content: redFrameContent)
+
         var blueprint = Blueprint(
             id: "blueprint 1",
-            contents: [
-                .frame(
-                    Frame(rect: canvas.bounds)
-                        .inset(top: 10, left: 10, bottom: 10, right: 10)
-                        .toBlueprintFrame(withStyle: redFrameStyle, content: redFrameContent)
-                )
-            ]
+            contents: [.frame(blueprintFrame)]
         )
 
         // When
@@ -42,17 +40,16 @@ class FramerCanvasTests: XCTestCase {
         for horizontalAlignment in textHorizontalAlignments {
             for verticalAlignment in textVerticalAlignments {
                 // When
-                blueprint.contents[0].mutateFrame { frame in
-                    frame.content = .init(
-                        contentType: .text(
-                            text: "Custom alignment, h: \(horizontalAlignment.0), v: \(verticalAlignment.0)",
-                            color: .red,
-                            font: .systemFont(ofSize: 10)
-                        ),
-                        horizontalAlignment: horizontalAlignment.1,
-                        verticalAlignment: verticalAlignment.1
-                    )
-                }
+                blueprintFrame.content = .init(
+                    contentType: .text(
+                        text: "Custom alignment, h: \(horizontalAlignment.0), v: \(verticalAlignment.0)",
+                        color: .red,
+                        font: .systemFont(ofSize: 10)
+                    ),
+                    horizontalAlignment: horizontalAlignment.1,
+                    verticalAlignment: verticalAlignment.1
+                )
+                blueprint.contents[0] = .frame(blueprintFrame)
                 canvas.draw(blueprint: blueprint)
 
                 // Then
@@ -65,15 +62,13 @@ class FramerCanvasTests: XCTestCase {
         // Given
         let canvas = FramerCanvas.create(size: .init(width: 800, height: 400))
 
+        var blueprintFrame: BlueprintFrame = Frame(rect: canvas.bounds)
+            .inset(top: 100, left: 300, bottom: 100, right: 300)
+            .toBlueprintFrame(withStyle: redFrameStyle, content: redFrameContent)
+
         var blueprint = Blueprint(
             id: "blueprint 1",
-            contents: [
-                .frame(
-                    Frame(rect: canvas.bounds)
-                        .inset(top: 100, left: 300, bottom: 100, right: 300)
-                        .toBlueprintFrame(withStyle: redFrameStyle, content: redFrameContent)
-                )
-            ]
+            contents: [.frame(blueprintFrame)]
         )
 
         // When
@@ -104,16 +99,15 @@ class FramerCanvasTests: XCTestCase {
             for position in positions {
                 for size in sizes {
                     // When
-                    blueprint.contents[0].mutateFrame { frame in
-                        frame.annotation = .init(
-                            text: "Annotation (size: \(size.0), position: \(position.0), alignment: \(alignment.0)",
-                            style: .init(
-                                size: size.1,
-                                position: position.1,
-                                alignment: alignment.1
-                            )
+                    blueprintFrame.annotation = .init(
+                        text: "Annotation (size: \(size.0), position: \(position.0), alignment: \(alignment.0)",
+                        style: .init(
+                            size: size.1,
+                            position: position.1,
+                            alignment: alignment.1
                         )
-                    }
+                    )
+                    blueprint.contents[0] = .frame(blueprintFrame)
                     canvas.draw(blueprint: blueprint)
 
                     // Then
@@ -234,6 +228,25 @@ class FramerCanvasTests: XCTestCase {
         try compareWithSnapshot(image: canvas.image)
     }
 
+    func testDrawBlueprintWithMultipleLines() throws {
+        // Given
+        let canvas = FramerCanvas.create(size: .init(width: 100, height: 100))
+
+        let blueprint = Blueprint(
+            contents: [
+                .line(.init(from: .init(x: 10, y: 20), to: .init(x: 90, y: 80), style: .init(lineWidth: 2, lineColor: .red, opacity: 1))),
+                .line(.init(from: .init(x: 10, y: 10), to: .init(x: 10, y: 90), style: .init(lineWidth: 1, lineColor: .green, opacity: 0.5))),
+                .line(.init(from: .init(x: 10, y: 50), to: .init(x: 90, y: 50), style: .init(lineWidth: 1, lineColor: .blue, opacity: 0.2))),
+            ]
+        )
+
+        // When
+        canvas.draw(blueprint: blueprint)
+
+        // Then
+        try compareWithSnapshot(image: canvas.image)
+    }
+
     func testEraseBlueprints() throws {
         // Given
         let canvas = FramerCanvas.create(size: .init(width: 400, height: 400))
@@ -310,17 +323,5 @@ class FramerCanvasTests: XCTestCase {
             file: file,
             line: line
         )
-    }
-}
-
-// MARK: - Convenience
-
-internal extension Blueprint.Content {
-    mutating func mutateFrame(_ mutation: (inout BlueprintFrame) -> Void) {
-        switch self {
-        case .frame(var value):
-            mutation(&value)
-            self = .frame(value)
-        }
     }
 }
