@@ -150,22 +150,42 @@ extension BlueprintFrameContent: AnyMockable, RandomMockable {
 
     static func mockRandom() -> BlueprintFrameContent {
         return BlueprintFrameContent(
-            text: .mockRandom(),
-            textColor: .mockRandom(),
-            font: .mockRandom()
+            contentType: .mockRandom(),
+            horizontalAlignment: .mockRandom(),
+            verticalAlignment: .mockRandom()
         )
     }
 
     static func mockWith(
-        text: String = .mockAny(),
-        textColor: UIColor = .mockAny(),
-        font: UIFont = .mockAny()
+        contentType: ContentType = .mockAny(),
+        horizontalAlignment: Alignment = .mockAny(),
+        verticalAlignment: Alignment = .mockAny()
     ) -> BlueprintFrameContent {
         return BlueprintFrameContent(
-            text: text,
-            textColor: textColor,
-            font: font
+            contentType: contentType,
+            horizontalAlignment: horizontalAlignment,
+            verticalAlignment: verticalAlignment
         )
+    }
+}
+
+extension BlueprintFrameContent.ContentType: AnyMockable, RandomMockable {
+    static func mockAny() -> BlueprintFrameContent.ContentType {
+        return .text(text: .mockAny(), color: .mockAny(), font: .mockAny())
+    }
+
+    static func mockRandom() -> BlueprintFrameContent.ContentType {
+        return .text(text: .mockRandom(), color: .mockRandom(), font: .mockRandom())
+    }
+}
+
+extension BlueprintFrameContent.Alignment: AnyMockable, RandomMockable {
+    static func mockAny() -> BlueprintFrameContent.Alignment {
+        return .center
+    }
+
+    static func mockRandom() -> BlueprintFrameContent.Alignment {
+        return [.leading, .center, .trailing].randomElement()!
     }
 }
 

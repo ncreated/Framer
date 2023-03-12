@@ -43,7 +43,17 @@ internal struct CanvasRenderer {
         context.cgContext.strokePath()
 
         // Content:
-        if let content = blueprintFrame.content {
+        drawContent(for: blueprintFrame, in: context)
+    }
+
+    private func drawContent(for blueprintFrame: BlueprintFrame, in context: UIGraphicsImageRendererContext) {
+        guard let content = blueprintFrame.content else {
+            return
+        }
+
+        switch content.contentType {
+        case let .text(text, color, font):
+            let rect = rect(from: blueprintFrame)
             let paragraphStyle = NSMutableParagraphStyle()
 
             switch content.horizontalAlignment {
@@ -53,12 +63,12 @@ internal struct CanvasRenderer {
             }
 
             let textAttributes: [NSAttributedString.Key : Any] = [
-                NSAttributedString.Key.font: content.font,
-                NSAttributedString.Key.foregroundColor: content.textColor,
+                NSAttributedString.Key.font: font,
+                NSAttributedString.Key.foregroundColor: color,
                 NSAttributedString.Key.paragraphStyle: paragraphStyle,
             ]
 
-            let attributedText = NSAttributedString(string: content.text, attributes: textAttributes)
+            let attributedText = NSAttributedString(string: text, attributes: textAttributes)
 
             let options: NSStringDrawingOptions = [.usesLineFragmentOrigin]
             let bb = attributedText.boundingRect(with: rect.size, options: options, context: nil)

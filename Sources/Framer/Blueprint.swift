@@ -77,28 +77,26 @@ public struct BlueprintFrameStyle: Equatable {
 }
 
 public struct BlueprintFrameContent: Equatable {
-    public var text: String
-    public var textColor: UIColor
-    public var font: UIFont
-    public var horizontalAlignment: TextAlignment
-    public var verticalAlignment: TextAlignment
+    public enum ContentType: Equatable {
+        case text(text: String, color: UIColor, font: UIFont)
+    }
 
-    public enum TextAlignment: Equatable {
+    public var contentType: ContentType
+    public var horizontalAlignment: Alignment
+    public var verticalAlignment: Alignment
+
+    public enum Alignment: Equatable {
         case leading
         case center
         case trailing
     }
 
     public init(
-        text: String,
-        textColor: UIColor,
-        font: UIFont,
-        horizontalAlignment: TextAlignment = .leading,
-        verticalAlignment: TextAlignment = .leading
+        contentType: ContentType,
+        horizontalAlignment: Alignment = .leading,
+        verticalAlignment: Alignment = .leading
     ) {
-        self.text = text
-        self.textColor = textColor
-        self.font = font
+        self.contentType = contentType
         self.horizontalAlignment = horizontalAlignment
         self.verticalAlignment = verticalAlignment
     }

@@ -11,11 +11,11 @@ let blueFrameStyle = BlueprintFrameStyle(
 )
 
 let redFrameContent = BlueprintFrameContent(
-    text: "Frame (red)", textColor: .red, font: .systemFont(ofSize: 20)
+    contentType: .text(text: "Frame (red)", color: .red, font: .systemFont(ofSize: 20))
 )
 let greenFrameContent = BlueprintFrameContent(
-    text: "Frame (green)", textColor: .green, font: .systemFont(ofSize: 15)
+    contentType: .text(text: "Frame (green)", color: .green, font: .systemFont(ofSize: 15))
 )
 let blueFrameContent = BlueprintFrameContent(
-    text: "Frame (blue)", textColor: .blue, font: .systemFont(ofSize: 10)
+    contentType: .text(text: "Frame (blue)", color: .blue, font: .systemFont(ofSize: 10))
 )

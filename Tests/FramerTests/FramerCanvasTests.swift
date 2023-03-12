@@ -28,12 +28,12 @@ class FramerCanvasTests: XCTestCase {
         // Then
         try compareWithSnapshot(image: canvas.image, imageFileSuffix: "-default")
 
-        let textHorizontalAlignments: [(String, BlueprintFrameContent.TextAlignment)] = [
+        let textHorizontalAlignments: [(String, BlueprintFrameContent.Alignment)] = [
             ("L", .leading),
             ("C", .center),
             ("T", .trailing),
         ]
-        let textVerticalAlignments: [(String, BlueprintFrameContent.TextAlignment)] = [
+        let textVerticalAlignments: [(String, BlueprintFrameContent.Alignment)] = [
             ("L", .leading),
             ("C", .center),
             ("T", .trailing),
@@ -44,9 +44,11 @@ class FramerCanvasTests: XCTestCase {
                 // When
                 blueprint.contents[0].mutateFrame { frame in
                     frame.content = .init(
-                        text: "Custom alignment, h: \(horizontalAlignment.0), v: \(verticalAlignment.0)",
-                        textColor: .red,
-                        font: .systemFont(ofSize: 10),
+                        contentType: .text(
+                            text: "Custom alignment, h: \(horizontalAlignment.0), v: \(verticalAlignment.0)",
+                            color: .red,
+                            font: .systemFont(ofSize: 10)
+                        ),
                         horizontalAlignment: horizontalAlignment.1,
                         verticalAlignment: verticalAlignment.1
                     )
@@ -168,11 +170,13 @@ class FramerCanvasTests: XCTestCase {
                 fillColor: .white
             ),
             content: .init(
-                text: """
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                """,
-                textColor: .purple,
-                font: .systemFont(ofSize: 8),
+                contentType: .text(
+                    text: """
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    """,
+                    color: .purple,
+                    font: .systemFont(ofSize: 8)
+                ),
                 horizontalAlignment: .center,
                 verticalAlignment: .center
             )
