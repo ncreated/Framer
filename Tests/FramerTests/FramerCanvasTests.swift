@@ -28,12 +28,12 @@ class FramerCanvasTests: XCTestCase {
         // Then
         try compareWithSnapshot(image: canvas.image, imageFileSuffix: "-default")
 
-        let textHorizontalAlignments: [(String, BlueprintFrameContent.Alignment)] = [
+        let textHorizontalAlignments: [(String, BlueprintFrame.Content.Alignment)] = [
             ("L", .leading),
             ("C", .center),
             ("T", .trailing),
         ]
-        let textVerticalAlignments: [(String, BlueprintFrameContent.Alignment)] = [
+        let textVerticalAlignments: [(String, BlueprintFrame.Content.Alignment)] = [
             ("L", .leading),
             ("C", .center),
             ("T", .trailing),
@@ -82,18 +82,18 @@ class FramerCanvasTests: XCTestCase {
         // Then
         try compareWithSnapshot(image: canvas.image, imageFileSuffix: "-noAnnotations")
 
-        let alignments: [(String, BlueprintFrameAnnotationStyle.Alignment)] = [
+        let alignments: [(String, BlueprintFrame.Annotation.Style.Alignment)] = [
             ("L", .leading),
             ("C", .center),
             ("T", .trailing),
         ]
-        let positions: [(String, BlueprintFrameAnnotationStyle.Position)] = [
+        let positions: [(String, BlueprintFrame.Annotation.Style.Position)] = [
             ("T", .top),
             ("B", .bottom),
             ("L", .left),
             ("R", .right),
         ]
-        let sizes: [(String, BlueprintFrameAnnotationStyle.Size)] = [
+        let sizes: [(String, BlueprintFrame.Annotation.Style.Size)] = [
             ("T", .tiny),
             ("S", .small),
             ("N", .normal),
@@ -198,7 +198,7 @@ class FramerCanvasTests: XCTestCase {
         let container = Frame(rect: canvas.bounds)
             .inset(top: 10, left: 10, bottom: 10, right: 10)
 
-        let symbolNamesWithAlignments: [(String, BlueprintFrameContent.Alignment, BlueprintFrameContent.Alignment)] = [
+        let symbolNamesWithAlignments: [(String, BlueprintFrame.Content.Alignment, BlueprintFrame.Content.Alignment)] = [
             // (symbol name, horizontal alignment, vertical alignment)
             ("arrow.up", .center, .leading),
             ("arrow.up.left", .leading, .leading),

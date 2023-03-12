@@ -86,23 +86,8 @@ internal struct CanvasRenderer {
 
         case let .image(image):
             let containerFrame = Frame(rect: rect(from: blueprintFrame))
-
-            let insideAlignment: Frame.InsideAlignment = {
-                switch (content.horizontalAlignment, content.verticalAlignment) {
-                case (.leading, .leading):      return .topLeft
-                case (.leading, .center):       return .middleLeft
-                case (.leading, .trailing):     return .bottomLeft
-                case (.center, .leading):       return .topCenter
-                case (.center, .center):        return .middleCenter
-                case (.center, .trailing):      return .bottomCenter
-                case (.trailing, .leading):     return .topRight
-                case (.trailing, .center):      return .middleRight
-                case (.trailing, .trailing):    return .bottomRight
-                }
-            }()
-
             let imageFrame = Frame(ofSize: image.size)
-                .putInside(containerFrame, alignTo: insideAlignment)
+                .putInside(containerFrame, alignTo: frameInsideAlignment(from: content.horizontalAlignment, content.verticalAlignment))
 
             image.draw(in: imageFrame.rect)
         }
@@ -161,7 +146,7 @@ internal struct CanvasRenderer {
         )
     }
 
-    private func annotationColors(for style: BlueprintFrameStyle) -> (background: UIColor, foreground: UIColor) {
+    private func annotationColors(for style: BlueprintFrame.Style) -> (background: UIColor, foreground: UIColor) {
         if style.fillColor.alpha > 0.1 {
             return (style.fillColor, style.fillColor.contrast(by: 100))
         } else if style.lineColor.alpha > 0.1 {
@@ -172,8 +157,8 @@ internal struct CanvasRenderer {
     }
 
     private func adjust(
-        position: BlueprintFrameAnnotationStyle.Position,
-        alignment: BlueprintFrameAnnotationStyle.Alignment,
+        position: BlueprintFrame.Annotation.Style.Position,
+        alignment: BlueprintFrame.Annotation.Style.Alignment,
         of annotationFrame: Frame,
         for annotatedFrame: Frame
     ) -> Frame {
@@ -189,7 +174,7 @@ internal struct CanvasRenderer {
         }
     }
 
-    private func frameHorizontalAlignment(from annotationAlignment: BlueprintFrameAnnotationStyle.Alignment) -> Frame.HorizontalAlignment {
+    private func frameHorizontalAlignment(from annotationAlignment: BlueprintFrame.Annotation.Style.Alignment) -> Frame.HorizontalAlignment {
         switch annotationAlignment {
         case .leading:  return .left
         case .center:   return .center
@@ -197,11 +182,25 @@ internal struct CanvasRenderer {
         }
     }
 
-    private func frameVerticalAlignment(from annotationAlignment: BlueprintFrameAnnotationStyle.Alignment) -> Frame.VerticalAlignment {
+    private func frameVerticalAlignment(from annotationAlignment: BlueprintFrame.Annotation.Style.Alignment) -> Frame.VerticalAlignment {
         switch annotationAlignment {
         case .leading:  return .top
         case .center:   return .middle
         case .trailing: return .bottom
+        }
+    }
+
+    private func frameInsideAlignment(from horizontalAlignment: BlueprintFrame.Content.Alignment, _ verticalAlignment: BlueprintFrame.Content.Alignment) -> Frame.InsideAlignment {
+        switch (horizontalAlignment, verticalAlignment) {
+        case (.leading, .leading):      return .topLeft
+        case (.leading, .center):       return .middleLeft
+        case (.leading, .trailing):     return .bottomLeft
+        case (.center, .leading):       return .topCenter
+        case (.center, .center):        return .middleCenter
+        case (.center, .trailing):      return .bottomCenter
+        case (.trailing, .leading):     return .topRight
+        case (.trailing, .center):      return .middleRight
+        case (.trailing, .trailing):    return .bottomRight
         }
     }
 }
@@ -209,7 +208,7 @@ internal struct CanvasRenderer {
 // MARK: - Convenience
 
 private extension Blueprint.Content {
-    var frameAndAnnotation: (BlueprintFrame, BlueprintFrameAnnotation)? {
+    var frameAndAnnotation: (BlueprintFrame, BlueprintFrame.Annotation)? {
         switch self {
         case .frame(let frame):
             return frame.annotation.map { (frame, $0) }

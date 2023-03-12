@@ -28,8 +28,8 @@ struct FramerItModifier: ViewModifier {
 public extension View {
     func frameIt(
         _ frameName: String,
-        frameStyle: BlueprintFrameStyle = .init(),
-        annotationStyle: BlueprintFrameAnnotationStyle = .init()
+        frameStyle: BlueprintFrame.Style = .init(),
+        annotationStyle: BlueprintFrame.Annotation.Style = .init()
     ) -> some View {
         return self.modifier(FramerItModifier())
             .onPreferenceChange(FramePreferenceKey.self) { frame in
@@ -44,7 +44,7 @@ public extension View {
                                     width: frame.width,
                                     height: frame.height,
                                     style: frameStyle,
-                                    annotation: BlueprintFrameAnnotation(
+                                    annotation: BlueprintFrame.Annotation(
                                         text: "\(frameName) \(pretty(frame))",
                                         style: annotationStyle
                                     )

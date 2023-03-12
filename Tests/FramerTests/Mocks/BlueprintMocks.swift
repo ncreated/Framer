@@ -62,13 +62,13 @@ extension Blueprint.Content: AnyMockable, RandomMockable {
     }
 }
 
-extension BlueprintFrameAnnotation: AnyMockable, RandomMockable {
-    static func mockAny() -> BlueprintFrameAnnotation {
+extension BlueprintFrame.Annotation: AnyMockable, RandomMockable {
+    static func mockAny() -> BlueprintFrame.Annotation {
         return .mockWith()
     }
 
-    static func mockRandom() -> BlueprintFrameAnnotation {
-        return BlueprintFrameAnnotation(
+    static func mockRandom() -> BlueprintFrame.Annotation {
+        return BlueprintFrame.Annotation(
             text: .mockRandom(),
             style: .mockRandom()
         )
@@ -76,21 +76,21 @@ extension BlueprintFrameAnnotation: AnyMockable, RandomMockable {
 
     static func mockWith(
         text: String = .mockAny(),
-        style: BlueprintFrameAnnotationStyle = .mockAny()
-    ) -> BlueprintFrameAnnotation {
-        return BlueprintFrameAnnotation(
+        style: BlueprintFrame.Annotation.Style = .mockAny()
+    ) -> BlueprintFrame.Annotation {
+        return BlueprintFrame.Annotation(
             text: text,
             style: style
         )
     }
 }
 
-extension BlueprintFrameAnnotationStyle: AnyMockable, RandomMockable {
-    static func mockAny() -> BlueprintFrameAnnotationStyle {
+extension BlueprintFrame.Annotation.Style: AnyMockable, RandomMockable {
+    static func mockAny() -> BlueprintFrame.Annotation.Style {
         return .init()
     }
 
-    static func mockRandom() -> BlueprintFrameAnnotationStyle {
+    static func mockRandom() -> BlueprintFrame.Annotation.Style {
         return .init(
             size: .mockRandom(),
             position: .mockRandom(),
@@ -99,12 +99,12 @@ extension BlueprintFrameAnnotationStyle: AnyMockable, RandomMockable {
     }
 }
 
-extension BlueprintFrameAnnotationStyle.Alignment: AnyMockable, RandomMockable {
-    static func mockAny() -> BlueprintFrameAnnotationStyle.Alignment {
+extension BlueprintFrame.Annotation.Style.Alignment: AnyMockable, RandomMockable {
+    static func mockAny() -> BlueprintFrame.Annotation.Style.Alignment {
         return .leading
     }
 
-    static func mockRandom() -> BlueprintFrameAnnotationStyle.Alignment {
+    static func mockRandom() -> BlueprintFrame.Annotation.Style.Alignment {
         return [
             .leading,
             .center,
@@ -113,12 +113,12 @@ extension BlueprintFrameAnnotationStyle.Alignment: AnyMockable, RandomMockable {
     }
 }
 
-extension BlueprintFrameAnnotationStyle.Position: AnyMockable, RandomMockable {
-    static func mockAny() -> BlueprintFrameAnnotationStyle.Position {
+extension BlueprintFrame.Annotation.Style.Position: AnyMockable, RandomMockable {
+    static func mockAny() -> BlueprintFrame.Annotation.Style.Position {
         return .top
     }
 
-    static func mockRandom() -> BlueprintFrameAnnotationStyle.Position {
+    static func mockRandom() -> BlueprintFrame.Annotation.Style.Position {
         return [
             .top,
             .bottom,
@@ -128,12 +128,12 @@ extension BlueprintFrameAnnotationStyle.Position: AnyMockable, RandomMockable {
     }
 }
 
-extension BlueprintFrameAnnotationStyle.Size: AnyMockable, RandomMockable {
-    static func mockAny() -> BlueprintFrameAnnotationStyle.Size {
+extension BlueprintFrame.Annotation.Style.Size: AnyMockable, RandomMockable {
+    static func mockAny() -> BlueprintFrame.Annotation.Style.Size {
         return .tiny
     }
 
-    static func mockRandom() -> BlueprintFrameAnnotationStyle.Size {
+    static func mockRandom() -> BlueprintFrame.Annotation.Style.Size {
         return [
             .tiny,
             .small,
@@ -143,13 +143,13 @@ extension BlueprintFrameAnnotationStyle.Size: AnyMockable, RandomMockable {
     }
 }
 
-extension BlueprintFrameContent: AnyMockable, RandomMockable {
-    static func mockAny() -> BlueprintFrameContent {
+extension BlueprintFrame.Content: AnyMockable, RandomMockable {
+    static func mockAny() -> BlueprintFrame.Content {
         return .mockWith()
     }
 
-    static func mockRandom() -> BlueprintFrameContent {
-        return BlueprintFrameContent(
+    static func mockRandom() -> BlueprintFrame.Content {
+        return BlueprintFrame.Content(
             contentType: .mockRandom(),
             horizontalAlignment: .mockRandom(),
             verticalAlignment: .mockRandom()
@@ -160,8 +160,8 @@ extension BlueprintFrameContent: AnyMockable, RandomMockable {
         contentType: ContentType = .mockAny(),
         horizontalAlignment: Alignment = .mockAny(),
         verticalAlignment: Alignment = .mockAny()
-    ) -> BlueprintFrameContent {
-        return BlueprintFrameContent(
+    ) -> BlueprintFrame.Content {
+        return BlueprintFrame.Content(
             contentType: contentType,
             horizontalAlignment: horizontalAlignment,
             verticalAlignment: verticalAlignment
@@ -169,33 +169,33 @@ extension BlueprintFrameContent: AnyMockable, RandomMockable {
     }
 }
 
-extension BlueprintFrameContent.ContentType: AnyMockable, RandomMockable {
-    static func mockAny() -> BlueprintFrameContent.ContentType {
+extension BlueprintFrame.Content.ContentType: AnyMockable, RandomMockable {
+    static func mockAny() -> BlueprintFrame.Content.ContentType {
         return .text(text: .mockAny(), color: .mockAny(), font: .mockAny())
     }
 
-    static func mockRandom() -> BlueprintFrameContent.ContentType {
+    static func mockRandom() -> BlueprintFrame.Content.ContentType {
         return .text(text: .mockRandom(), color: .mockRandom(), font: .mockRandom())
     }
 }
 
-extension BlueprintFrameContent.Alignment: AnyMockable, RandomMockable {
-    static func mockAny() -> BlueprintFrameContent.Alignment {
+extension BlueprintFrame.Content.Alignment: AnyMockable, RandomMockable {
+    static func mockAny() -> BlueprintFrame.Content.Alignment {
         return .center
     }
 
-    static func mockRandom() -> BlueprintFrameContent.Alignment {
+    static func mockRandom() -> BlueprintFrame.Content.Alignment {
         return [.leading, .center, .trailing].randomElement()!
     }
 }
 
-extension BlueprintFrameStyle: AnyMockable, RandomMockable {
-    static func mockAny() -> BlueprintFrameStyle {
+extension BlueprintFrame.Style: AnyMockable, RandomMockable {
+    static func mockAny() -> BlueprintFrame.Style {
         return .mockWith()
     }
 
-    static func mockRandom() -> BlueprintFrameStyle {
-        return BlueprintFrameStyle(
+    static func mockRandom() -> BlueprintFrame.Style {
+        return BlueprintFrame.Style(
             lineWidth: .mockRandom(),
             lineColor: .mockRandom(),
             fillColor: .mockRandom(),
@@ -210,8 +210,8 @@ extension BlueprintFrameStyle: AnyMockable, RandomMockable {
         fillColor: UIColor = .mockAny(),
         cornerRadius: CGFloat = .mockAny(),
         opacity: CGFloat = .mockAny()
-    ) -> BlueprintFrameStyle {
-        return BlueprintFrameStyle(
+    ) -> BlueprintFrame.Style {
+        return BlueprintFrame.Style(
             lineWidth: lineWidth,
             lineColor: lineColor,
             fillColor: fillColor,
@@ -243,9 +243,9 @@ extension BlueprintFrame: AnyMockable, RandomMockable {
         y: CGFloat = .mockAny(),
         width: CGFloat = .mockAny(),
         height: CGFloat = .mockAny(),
-        style: BlueprintFrameStyle = .mockAny(),
-        content: BlueprintFrameContent? = .mockAny(),
-        annotation: BlueprintFrameAnnotation? = .mockAny()
+        style: BlueprintFrame.Style = .mockAny(),
+        content: BlueprintFrame.Content? = .mockAny(),
+        annotation: BlueprintFrame.Annotation? = .mockAny()
     ) -> BlueprintFrame {
         return BlueprintFrame(
             x: x,
