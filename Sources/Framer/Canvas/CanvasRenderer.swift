@@ -89,10 +89,7 @@ internal struct CanvasRenderer {
 
         case let .image(image):
             let containerFrame = Frame(rect: rect(from: blueprintFrame))
-            let imageFrame = Frame(ofSize: image.size)
-                .putInside(containerFrame, alignTo: frameInsideAlignment(from: content.horizontalAlignment, content.verticalAlignment))
-
-            image.draw(in: imageFrame.rect)
+            image.draw(in: containerFrame.rect)
         }
     }
 
