@@ -28,24 +28,26 @@ struct FramerItModifier: ViewModifier {
 public extension View {
     func frameIt(
         _ frameName: String,
-        frameStyle: BlueprintFrameStyle = .init(),
-        annotationStyle: BlueprintFrameAnnotationStyle = .init()
+        frameStyle: BlueprintFrame.Style = .init(),
+        annotationStyle: BlueprintFrame.Annotation.Style = .init()
     ) -> some View {
         return self.modifier(FramerItModifier())
             .onPreferenceChange(FramePreferenceKey.self) { frame in
                 FramerWindow.current.draw(
                     blueprint: Blueprint(
                         id: Blueprint.ID(stringLiteral: "\(self)-\(frameName)"),
-                        frames: [
-                            BlueprintFrame(
-                                x: frame.minX,
-                                y: frame.minY,
-                                width: frame.width,
-                                height: frame.height,
-                                style: frameStyle,
-                                annotation: BlueprintFrameAnnotation(
-                                    text: "\(frameName) \(pretty(frame))",
-                                    style: annotationStyle
+                        contents: [
+                            .frame(
+                                BlueprintFrame(
+                                    x: frame.minX,
+                                    y: frame.minY,
+                                    width: frame.width,
+                                    height: frame.height,
+                                    style: frameStyle,
+                                    annotation: BlueprintFrame.Annotation(
+                                        text: "\(frameName) \(pretty(frame))",
+                                        style: annotationStyle
+                                    )
                                 )
                             )
                         ]
