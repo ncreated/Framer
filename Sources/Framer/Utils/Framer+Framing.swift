@@ -3,9 +3,9 @@ import Framing
 public extension Frame {
     /// Converts `Framing.Frame` to `Framer.BlueprintFrame` with given style.
     func toBlueprintFrame(
-        withStyle style: BlueprintFrameStyle,
-        content: BlueprintFrameContent? = nil,
-        annotation: BlueprintFrameAnnotation? = nil
+        withStyle style: BlueprintFrame.Style,
+        content: BlueprintFrame.Content? = nil,
+        annotation: BlueprintFrame.Annotation? = nil
     ) -> BlueprintFrame {
         return BlueprintFrame(
             x: x,

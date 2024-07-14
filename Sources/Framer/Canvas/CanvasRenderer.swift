@@ -12,62 +12,84 @@ internal struct CanvasRenderer {
     func render(state: CanvasState) -> UIImage {
         return renderer.image { context in
             state.blueprints.forEach { blueprint in
-                drawShapeAndContent(for: blueprint, in: context)
+                // First, draw each content:
+                blueprint.contents.forEach { content in
+                    switch content {
+                    case .frame(let frame): draw(blueprintFrame: frame, in: context)
+                    case .line(let line):   draw(blueprintLine: line, in: context)
+                    }
+                }
+
+                // Then, draw annotations:
                 drawAnnotations(for: blueprint, in: context)
             }
         }
     }
 
-    private func drawShapeAndContent(for blueprint: Blueprint, in context: UIGraphicsImageRendererContext) {
-        blueprint.frames.forEach { blueprintFrame in
+    // MARK: - Drawing `BlueprintFrame`
+
+    private func draw(blueprintFrame: BlueprintFrame, in context: UIGraphicsImageRendererContext) {
+        let rect = rect(from: blueprintFrame)
+        let path = UIBezierPath(roundedRect: rect, cornerRadius: blueprintFrame.style.cornerRadius)
+
+        context.cgContext.setAlpha(blueprintFrame.style.opacity)
+
+        // Fill:
+        context.cgContext.setFillColor(blueprintFrame.style.fillColor.cgColor)
+        context.cgContext.addPath(path.cgPath)
+        context.cgContext.fillPath()
+
+        // Stroke:
+        context.cgContext.setLineWidth(blueprintFrame.style.lineWidth)
+        context.cgContext.setStrokeColor(blueprintFrame.style.lineColor.cgColor)
+        context.cgContext.addPath(path.cgPath)
+        context.cgContext.strokePath()
+
+        // Content:
+        drawContent(for: blueprintFrame, in: context)
+    }
+
+    private func drawContent(for blueprintFrame: BlueprintFrame, in context: UIGraphicsImageRendererContext) {
+        guard let content = blueprintFrame.content else {
+            return
+        }
+
+        switch content.contentType {
+        case let .text(text, color, font):
             let rect = rect(from: blueprintFrame)
-            let path = UIBezierPath(roundedRect: rect, cornerRadius: blueprintFrame.style.cornerRadius)
+            let paragraphStyle = NSMutableParagraphStyle()
 
-            context.cgContext.setAlpha(blueprintFrame.style.opacity)
-
-            // Fill:
-            context.cgContext.setFillColor(blueprintFrame.style.fillColor.cgColor)
-            context.cgContext.addPath(path.cgPath)
-            context.cgContext.fillPath()
-
-            // Stroke:
-            context.cgContext.setLineWidth(blueprintFrame.style.lineWidth)
-            context.cgContext.setStrokeColor(blueprintFrame.style.lineColor.cgColor)
-            context.cgContext.addPath(path.cgPath)
-            context.cgContext.strokePath()
-
-            // Content:
-            if let content = blueprintFrame.content {
-                let paragraphStyle = NSMutableParagraphStyle()
-
-                switch content.horizontalAlignment {
-                case .leading:  paragraphStyle.alignment = .left
-                case .center:   paragraphStyle.alignment = .center
-                case .trailing: paragraphStyle.alignment = .right
-                }
-
-                let textAttributes: [NSAttributedString.Key : Any] = [
-                    NSAttributedString.Key.font: content.font,
-                    NSAttributedString.Key.foregroundColor: content.textColor,
-                    NSAttributedString.Key.paragraphStyle: paragraphStyle,
-                ]
-
-                let attributedText = NSAttributedString(string: content.text, attributes: textAttributes)
-
-                let options: NSStringDrawingOptions = [.usesLineFragmentOrigin]
-                let bb = attributedText.boundingRect(with: rect.size, options: options, context: nil)
-                let textRect: CGRect
-                switch content.verticalAlignment {
-                case .leading:
-                    textRect = .init(x: rect.minX, y: rect.minY, width: rect.width, height: bb.height)
-                case .center:
-                    textRect = .init(x: rect.minX, y: rect.minY + (rect.height - bb.height) / 2, width: rect.width, height: bb.height)
-                case .trailing:
-                    textRect = .init(x: rect.minX, y: rect.maxY - bb.height, width: rect.width, height: bb.height)
-                }
-
-                attributedText.draw(in: textRect)
+            switch content.horizontalAlignment {
+            case .leading:  paragraphStyle.alignment = .left
+            case .center:   paragraphStyle.alignment = .center
+            case .trailing: paragraphStyle.alignment = .right
             }
+
+            let textAttributes: [NSAttributedString.Key : Any] = [
+                NSAttributedString.Key.font: font,
+                NSAttributedString.Key.foregroundColor: color,
+                NSAttributedString.Key.paragraphStyle: paragraphStyle,
+            ]
+
+            let attributedText = NSAttributedString(string: text, attributes: textAttributes)
+
+            let options: NSStringDrawingOptions = [.usesLineFragmentOrigin]
+            let bb = attributedText.boundingRect(with: rect.size, options: options, context: nil)
+            let textRect: CGRect
+            switch content.verticalAlignment {
+            case .leading:
+                textRect = .init(x: rect.minX, y: rect.minY, width: rect.width, height: bb.height)
+            case .center:
+                textRect = .init(x: rect.minX, y: rect.minY + (rect.height - bb.height) / 2, width: rect.width, height: bb.height)
+            case .trailing:
+                textRect = .init(x: rect.minX, y: rect.maxY - bb.height, width: rect.width, height: bb.height)
+            }
+
+            attributedText.draw(in: textRect)
+
+        case let .image(image):
+            let containerFrame = Frame(rect: rect(from: blueprintFrame))
+            image.draw(in: containerFrame.rect)
         }
     }
 
@@ -76,11 +98,9 @@ internal struct CanvasRenderer {
         // and mark colliding annotation with red stroke:
         var drawnAnnotationFrames: [Frame] = []
 
-        blueprint.frames.forEach { blueprintFrame in
-            guard let annotation = blueprintFrame.annotation else {
-                return
-            }
-
+        blueprint.contents
+            .compactMap { $0.frameAndAnnotation }
+            .forEach { blueprintFrame, annotation in
             let annotatedFrame = Frame(rect: rect(from: blueprintFrame))
             let (backgroundColor, foregroundColor) = annotationColors(for: blueprintFrame.style)
 
@@ -115,6 +135,17 @@ internal struct CanvasRenderer {
         }
     }
 
+    // MARK: - Drawing `BlueprintLine`
+
+    private func draw(blueprintLine: BlueprintLine, in context: UIGraphicsImageRendererContext) {
+        context.cgContext.setLineWidth(blueprintLine.style.lineWidth)
+        context.cgContext.setStrokeColor(blueprintLine.style.lineColor.cgColor)
+        context.cgContext.setAlpha(blueprintLine.style.opacity)
+        context.cgContext.move(to: blueprintLine.from)
+        context.cgContext.addLine(to: blueprintLine.to)
+        context.cgContext.strokePath()
+    }
+
     // MARK: - Helpers
 
     private func rect(from blueprintFrame: BlueprintFrame) -> CGRect {
@@ -126,7 +157,7 @@ internal struct CanvasRenderer {
         )
     }
 
-    private func annotationColors(for style: BlueprintFrameStyle) -> (background: UIColor, foreground: UIColor) {
+    private func annotationColors(for style: BlueprintFrame.Style) -> (background: UIColor, foreground: UIColor) {
         if style.fillColor.alpha > 0.1 {
             return (style.fillColor, style.fillColor.contrast(by: 100))
         } else if style.lineColor.alpha > 0.1 {
@@ -137,8 +168,8 @@ internal struct CanvasRenderer {
     }
 
     private func adjust(
-        position: BlueprintFrameAnnotationStyle.Position,
-        alignment: BlueprintFrameAnnotationStyle.Alignment,
+        position: BlueprintFrame.Annotation.Style.Position,
+        alignment: BlueprintFrame.Annotation.Style.Alignment,
         of annotationFrame: Frame,
         for annotatedFrame: Frame
     ) -> Frame {
@@ -154,7 +185,7 @@ internal struct CanvasRenderer {
         }
     }
 
-    private func frameHorizontalAlignment(from annotationAlignment: BlueprintFrameAnnotationStyle.Alignment) -> Frame.HorizontalAlignment {
+    private func frameHorizontalAlignment(from annotationAlignment: BlueprintFrame.Annotation.Style.Alignment) -> Frame.HorizontalAlignment {
         switch annotationAlignment {
         case .leading:  return .left
         case .center:   return .center
@@ -162,11 +193,38 @@ internal struct CanvasRenderer {
         }
     }
 
-    private func frameVerticalAlignment(from annotationAlignment: BlueprintFrameAnnotationStyle.Alignment) -> Frame.VerticalAlignment {
+    private func frameVerticalAlignment(from annotationAlignment: BlueprintFrame.Annotation.Style.Alignment) -> Frame.VerticalAlignment {
         switch annotationAlignment {
         case .leading:  return .top
         case .center:   return .middle
         case .trailing: return .bottom
+        }
+    }
+
+    private func frameInsideAlignment(from horizontalAlignment: BlueprintFrame.Content.Alignment, _ verticalAlignment: BlueprintFrame.Content.Alignment) -> Frame.InsideAlignment {
+        switch (horizontalAlignment, verticalAlignment) {
+        case (.leading, .leading):      return .topLeft
+        case (.leading, .center):       return .middleLeft
+        case (.leading, .trailing):     return .bottomLeft
+        case (.center, .leading):       return .topCenter
+        case (.center, .center):        return .middleCenter
+        case (.center, .trailing):      return .bottomCenter
+        case (.trailing, .leading):     return .topRight
+        case (.trailing, .center):      return .middleRight
+        case (.trailing, .trailing):    return .bottomRight
+        }
+    }
+}
+
+// MARK: - Convenience
+
+private extension Blueprint.Content {
+    var frameAndAnnotation: (BlueprintFrame, BlueprintFrame.Annotation)? {
+        switch self {
+        case .frame(let frame):
+            return frame.annotation.map { (frame, $0) }
+        default:
+            return nil
         }
     }
 }

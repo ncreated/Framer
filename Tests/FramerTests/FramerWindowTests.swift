@@ -55,8 +55,8 @@ internal class FramerWindowTests: XCTestCase {
         FramerWindow.current.draw(
             blueprint: Blueprint(
                 id: "blueprint 1",
-                frames: [
-                    frame1.toBlueprintFrame(withStyle: redFrameStyle, content: redFrameContent),
+                contents: [
+                    .frame(frame1.toBlueprintFrame(withStyle: redFrameStyle, content: redFrameContent)),
                 ]
             )
         )
@@ -64,8 +64,8 @@ internal class FramerWindowTests: XCTestCase {
         FramerWindow.current.draw(
             blueprint: Blueprint(
                 id: "blueprint 2",
-                frames: [
-                    frame2.toBlueprintFrame(withStyle: greenFrameStyle, content: greenFrameContent),
+                contents: [
+                    .frame(frame2.toBlueprintFrame(withStyle: greenFrameStyle, content: greenFrameContent)),
                 ]
             )
         )
@@ -73,8 +73,8 @@ internal class FramerWindowTests: XCTestCase {
         FramerWindow.current.draw(
             blueprint: Blueprint(
                 id: "blueprint 3",
-                frames: [
-                    frame3.toBlueprintFrame(withStyle: blueFrameStyle, content: blueFrameContent),
+                contents: [
+                    .frame(frame3.toBlueprintFrame(withStyle: blueFrameStyle, content: blueFrameContent)),
                 ]
             )
         )
@@ -97,8 +97,8 @@ internal class FramerWindowTests: XCTestCase {
         FramerWindow.current.draw(
             blueprint: Blueprint(
                 id: "blueprint 1",
-                frames: [
-                    frame.toBlueprintFrame(withStyle: redFrameStyle, content: redFrameContent)
+                contents: [
+                    .frame(frame.toBlueprintFrame(withStyle: redFrameStyle, content: redFrameContent)),
                 ]
             )
         )
