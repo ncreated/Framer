@@ -61,19 +61,22 @@ public struct BlueprintFrame: Equatable {
         public var fillColor: UIColor
         public var cornerRadius: CGFloat
         public var opacity: CGFloat
+        public var clip: CGRect?
 
         public init(
             lineWidth: CGFloat = 1,
             lineColor: UIColor = .black,
             fillColor: UIColor = .clear,
             cornerRadius: CGFloat = 0,
-            opacity: CGFloat = 0.75
+            opacity: CGFloat = 0.75,
+            clip: CGRect? = nil
         ) {
             self.lineWidth = lineWidth
             self.lineColor = lineColor
             self.fillColor = fillColor
             self.cornerRadius = cornerRadius
             self.opacity = opacity
+            self.clip = clip
         }
     }
 
