@@ -34,6 +34,11 @@ internal struct CanvasRenderer {
 
         context.cgContext.setAlpha(blueprintFrame.style.opacity)
 
+        // Clip:
+        blueprintFrame.style.clip.map {
+            context.cgContext.clip(to: $0)
+        }
+
         // Fill:
         context.cgContext.setFillColor(blueprintFrame.style.fillColor.cgColor)
         context.cgContext.addPath(path.cgPath)
@@ -47,6 +52,9 @@ internal struct CanvasRenderer {
 
         // Content:
         drawContent(for: blueprintFrame, in: context)
+
+        // Reset clip:
+        context.cgContext.resetClip()
     }
 
     private func drawContent(for blueprintFrame: BlueprintFrame, in context: UIGraphicsImageRendererContext) {

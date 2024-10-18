@@ -119,7 +119,7 @@ class FramerCanvasTests: XCTestCase {
 
     func testDrawSingleBlueprintWithMultipleFrames() throws {
         // Given
-        let canvas = FramerCanvas.create(size: .init(width: 400, height: 400))
+        let canvas = FramerCanvas.create(size: .init(width: 280, height: 280))
 
         let container = Frame(rect: canvas.bounds)
             .inset(top: 40, left: 40, bottom: 40, right: 40)
@@ -132,14 +132,21 @@ class FramerCanvasTests: XCTestCase {
             .putInside(container, alignTo: .topLeft)
             .offsetBy(x: 100, y: 100)
 
+        var style1 = redFrameStyle
+        style1.clip = container.rect
+        var style2 = greenFrameStyle
+        style2.clip = frame1.rect
+        var style3 = blueFrameStyle
+        style3.clip = frame1.rect
+
         // When
         canvas.draw(
             blueprint: Blueprint(
                 id: "blueprint 1",
                 contents: [
-                    .frame(frame1.toBlueprintFrame(withStyle: redFrameStyle, content: redFrameContent)),
-                    .frame(frame2.toBlueprintFrame(withStyle: greenFrameStyle, content: greenFrameContent)),
-                    .frame(frame3.toBlueprintFrame(withStyle: blueFrameStyle, content: blueFrameContent)),
+                    .frame(frame1.toBlueprintFrame(withStyle: style1, content: redFrameContent)),
+                    .frame(frame2.toBlueprintFrame(withStyle: style2, content: greenFrameContent)),
+                    .frame(frame3.toBlueprintFrame(withStyle: style3, content: blueFrameContent)),
                 ]
             )
         )
